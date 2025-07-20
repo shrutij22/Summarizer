@@ -1,0 +1,28 @@
+<!-- src/main/resources/static/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MindSync</title>
+</head>
+<body>
+<h1>Ask AI</h1>
+<input id="promptInput" placeholder="Type your message..." />
+<button onclick="askAI()">Generate</button>
+<pre id="result"></pre>
+
+<script>
+    function askAI() {
+        const prompt = document.getElementById("promptInput").value;
+
+        fetch('/api/ai/generate?prompt=' + encodeURIComponent(prompt))
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("result").textContent = data;
+            })
+            .catch(err => {
+                document.getElementById("result").textContent = "Error: " + err;
+            });
+    }
+</script>
+</body>
+</html>

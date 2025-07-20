@@ -1,5 +1,8 @@
 package com.example.mindsycn.model;
 
+import lombok.Data;
+
+@Data
 public class QueryRequest {
 
 
