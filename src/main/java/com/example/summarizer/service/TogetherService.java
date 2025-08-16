@@ -1,4 +1,4 @@
-package com.example.mindsycn.service;
+package com.example.summarizer.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +15,8 @@ import java.util.Map;
 @Service
 public class TogetherService {
 
-    private final WebClient webClient;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final WebClient webClient; // For HTTP requests
+    private final ObjectMapper objectMapper = new ObjectMapper(); // For JSON parsing
 
     public TogetherService(@Value("${together.api.key}") String apiKey,
                            WebClient.Builder webClientBuilder) {
@@ -28,16 +28,19 @@ public class TogetherService {
     }
 
     public Mono<String> generateScheduleFromThought(String userThought) {
+        // Build request body
         Map<String, Object> requestBody = Map.of(
                 "model", "meta-llama/Llama-3-8b-chat-hf",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "Convert unstructured thoughts into 3 structured, time-specific daily tasks."),
+                        Map.of("role", "system", "content",
+                                "You are a meeting summarizer. Use transcript or prompt to create a structured summary in bullet points."),
                         Map.of("role", "user", "content", userThought)
                 ),
                 "temperature", 0.7,
                 "top_p", 0.9
         );
 
+        // Call Together API
         return webClient.post()
                 .uri("/v1/chat/completions")
                 .bodyValue(requestBody)

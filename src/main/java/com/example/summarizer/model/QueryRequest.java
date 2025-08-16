@@ -1,4 +1,4 @@
-package com.example.mindsycn.model;
+package com.example.summarizer.model;
 
 import lombok.Data;
 
