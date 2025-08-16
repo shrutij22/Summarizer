@@ -1,0 +1,9 @@
+com\example\summarizer\Controller\SummarizerController.class
+com\example\summarizer\Controller\SummarizerController$PromptRequest.class
+com\example\summarizer\Controller\EmailController$EmailRequest.class
+com\example\summarizer\Summarizer.class
+com\example\summarizer\Controller\EmailController.class
+com\example\summarizer\model\QueryRequest.class
+com\example\summarizer\service\TogetherService.class
+com\example\summarizer\config\WebClientConfig.class
+com\example\summarizer\service\EmailService.class

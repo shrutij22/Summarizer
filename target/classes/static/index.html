@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindSync AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4A90E2;
+        }
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 12px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #4A90E2;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        #result {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>Summarizer</h1>
+
+<div class="container">
+    <!-- Prompt-based Generation -->
+    <div class="section">
+        <label for="promptInput">Choose Prompt or upload a text transcript (.txt file) </label><br><br>
+        <label for="promptInput">Custom Prompt:</label>
+        <textarea id="promptInput" placeholder="Type your message..." rows="3"></textarea>
+        <button onclick="askAI()">Generate</button>
+    </div>
+
+    <hr>
+
+    <!-- Transcript Summarization -->
+    <div class="section">
+        <label for="fileInput">Upload Transcript:</label>
+        <input type="file" id="fileInput" accept=".txt"/>
+        <button onclick="summarizeTranscript()">Summarize</button>
+    </div>
+
+    <hr>
+
+    <!-- Result -->
+    <div class="section">
+        <label for="result">Summary:</label>
+        <div id="result" contenteditable="true">Your output will appear here.</div>
+    </div>
+
+    <hr>
+
+    <!-- Share via Email -->
+    <div class="section">
+        <label for="emailInput">Send Summary via Email:</label>
+        <input id="emailInput" type="email" placeholder="Recipient email"/>
+        <button onclick="sendEmail()">Send</button>
+    </div>
+</div>
+
+<script>
+    // Prompt-based AI
+    function askAI() {
+        const prompt = document.getElementById("promptInput").value;
+
+        fetch('/api/ai/generate?prompt=' + encodeURIComponent(prompt))
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("result").textContent = data;
+            })
+            .catch(err => {
+                document.getElementById("result").textContent = "Error: " + err;
+            });
+    }
+
+    // Transcript Summarization
+    function summarizeTranscript() {
+        const file = document.getElementById("fileInput").files[0];
+        if (!file) {
+            alert("Please select a file first.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch('/api/ai/summarize', {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("result").textContent = data;
+            })
+            .catch(err => {
+                document.getElementById("result").textContent = "Error: " + err;
+            });
+    }
+
+    // Send email (requires backend endpoint /api/email/send)
+    function sendEmail() {
+        const email = document.getElementById("emailInput").value;
+        const content = document.getElementById("result").textContent;
+
+        if(!email || !content){
+            alert("Please enter email and generate summary first!");
+            return;
+        }
+
+        fetch('/api/email/send', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ to: email, content: content })
+        })
+        .then(res => res.text())
+        .then(msg => alert(msg))
+        .catch(err => alert("Error sending email: " + err));
+    }
+</script>
+</body>
+</html>
