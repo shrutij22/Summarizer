@@ -5,10 +5,17 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the application's JAR file from your local target directory into the container
+<<<<<<< HEAD
+=======
+# This assumes you have already run 'mvn clean package'
+>>>>>>> 0aa4b605b80c4bfa619d4bdcfab4505ab30a64ca
 COPY target/Summarizer-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Expose the port your Spring Boot app runs on (default is 8080)
 EXPOSE 8080
 
 # Define the command to run your Spring Boot application
+<<<<<<< HEAD
+CMD ["java", "-jar", "app.jar"]
+=======
 CMD ["java", "-jar", "app.jar"]
